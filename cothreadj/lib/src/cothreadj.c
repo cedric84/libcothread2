@@ -52,6 +52,12 @@
 	}																							\
 }
 
+/**
+ * @brief		Calls the setjmp function.
+ * @param		[in]	_buf	The buffer to store the execution context in.
+ * @return		Returns zero on first return, any user value during the second one.
+ * @ingroup		doxy_cothreadj
+ */
 #if ((COTHREAD_ARCH_ID_X86_64 == COTHREAD_ARCH_ID) && (COTHREAD_OS_ID_WINDOWS == COTHREAD_OS_ID))
 	// MSVCRT's setjmp has two arguments, see the setjmp macro.
 	// Placing zero in the second one prevent the CRT to unwind the stack during a longjmp.
@@ -64,12 +70,6 @@
 		#define COTHREADJ_SETJMP(_buf)	__intrinsic_setjmp((_buf), 0)
 	#endif
 #else
-	/**
-	 * @brief		Calls the setjmp function.
-	 * @param		[in]	_buf	The buffer to store the execution context in.
-	 * @return		Returns zero on first return, any user value during the second one.
-	 * @ingroup		doxy_cothreadj
-	 */
 	#define COTHREADJ_SETJMP(_buf)	setjmp((_buf))
 #endif
 
