@@ -25,6 +25,7 @@ check_config(void)
 
 	static const char*	os_name		= COTHREAD_OS_ID_GNU_LINUX		== COTHREAD_OS_ID ? "gnu_linux"
 									: COTHREAD_OS_ID_FREEBSD		== COTHREAD_OS_ID ? "freebsd"
+									: COTHREAD_OS_ID_MACOS			== COTHREAD_OS_ID ? "macos"
 									: "???";
 
 	//---Check the configuration---//
