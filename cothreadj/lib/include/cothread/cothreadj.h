@@ -63,6 +63,13 @@ typedef struct _cothreadj_t			cothreadj_t;		///< @brief	The cothread type.
 		)
 	#define COTHREADJ_STACK_ALIGN	4	///< @brief	The stack alignment.
 	/** @cond */ struct _cothreadj_stack_t { char buf; } __attribute__ ((aligned (COTHREADJ_STACK_ALIGN)));	/** @endcond */
+#elif	(!0	\
+		&& (COTHREAD_CC_ID_MINGW		== COTHREAD_CC_ID)		\
+		&& (COTHREAD_ARCH_ID_X86_64		== COTHREAD_ARCH_ID)	\
+		&& (COTHREAD_OS_ID_WINDOWS		== COTHREAD_OS_ID)		\
+		)
+	#define COTHREADJ_STACK_ALIGN	16	///< @brief	The stack alignment.
+	/** @cond */ struct _cothreadj_stack_t { char buf; } __attribute__ ((aligned (COTHREADJ_STACK_ALIGN)));	/** @endcond */
 #else
 	#error	"stack type is not detected."
 #endif
