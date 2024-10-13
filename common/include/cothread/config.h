@@ -15,6 +15,7 @@
 #define COTHREAD_CC_ID_GCC			1	///< @brief	The GNU C compiler identifier.
 #define COTHREAD_CC_ID_CLANG		2	///< @brief	The LLVM Clang compiler identifier.
 #define COTHREAD_CC_ID_MINGW		3	///< @brief	The MinGW compiler identifier.
+#define COTHREAD_CC_ID_CL			4	///< @brief	The Microsoft Visual Studio compiler identifier.
 
 #define COTHREAD_ARCH_ID_X86		1	///< @brief	The x86 architecture identifier.
 #define COTHREAD_ARCH_ID_X86_64		2	///< @brief	The x86_64 architecture identifier.
@@ -31,6 +32,8 @@
 	#define	COTHREAD_CC_ID	COTHREAD_CC_ID_CLANG
 #elif	(defined(__MINGW32__))
 	#define	COTHREAD_CC_ID	COTHREAD_CC_ID_MINGW
+#elif	(defined(_MSC_VER))
+	#define	COTHREAD_CC_ID	COTHREAD_CC_ID_CL
 #endif
 
 #if		((COTHREAD_CC_ID_GCC == COTHREAD_CC_ID) && defined(__i386__))
@@ -43,6 +46,8 @@
 	#define	COTHREAD_ARCH_ID	COTHREAD_ARCH_ID_X86
 #elif	((COTHREAD_CC_ID_MINGW == COTHREAD_CC_ID) && defined(__x86_64__))
 	#define	COTHREAD_ARCH_ID	COTHREAD_ARCH_ID_X86_64
+#elif	((COTHREAD_CC_ID_CL == COTHREAD_CC_ID) && defined(_M_IX86))
+	#define	COTHREAD_ARCH_ID	COTHREAD_ARCH_ID_X86
 #endif
 
 #if		((COTHREAD_CC_ID_GCC == COTHREAD_CC_ID) && defined(__gnu_linux__))
@@ -52,6 +57,8 @@
 #elif	((COTHREAD_CC_ID_CLANG == COTHREAD_CC_ID) && defined(__APPLE__) && defined(__MACH__) && defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__))
 	#define	COTHREAD_OS_ID		COTHREAD_OS_ID_MACOS
 #elif	((COTHREAD_CC_ID_MINGW == COTHREAD_CC_ID) && defined(_WIN32))
+	#define	COTHREAD_OS_ID		COTHREAD_OS_ID_WINDOWS
+#elif	((COTHREAD_CC_ID_CL == COTHREAD_CC_ID) && defined(_WIN32))
 	#define	COTHREAD_OS_ID		COTHREAD_OS_ID_WINDOWS
 #endif
 
@@ -120,6 +127,14 @@
 	#define COTHREAD_LINK_EXPORT	__attribute__ ((dllexport))
 	#define	COTHREAD_LINK_HIDDEN
 	#define COTHREAD_CALL			__attribute__ ((ms_abi))
+#elif	(!0	\
+		&& (COTHREAD_CC_ID_CL			== COTHREAD_CC_ID)		\
+		&& (COTHREAD_ARCH_ID_X86		== COTHREAD_ARCH_ID)	\
+		&& (COTHREAD_OS_ID_WINDOWS		== COTHREAD_OS_ID)		\
+		)
+	#define COTHREAD_LINK_EXPORT	__declspec(dllexport)
+	#define	COTHREAD_LINK_HIDDEN
+	#define COTHREAD_CALL			__cdecl
 #else
 	#error	"configuration is not supported."
 #endif

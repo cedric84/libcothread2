@@ -18,6 +18,7 @@ check_config(void)
 	static const char*	cc_name		= COTHREAD_CC_ID_GCC			== COTHREAD_CC_ID ? "gcc"
 									: COTHREAD_CC_ID_CLANG			== COTHREAD_CC_ID ? "clang"
 									: COTHREAD_CC_ID_MINGW			== COTHREAD_CC_ID ? "mingw"
+									: COTHREAD_CC_ID_CL				== COTHREAD_CC_ID ? "cl"
 									: "???";
 
 	static const char*	arch_name	= COTHREAD_ARCH_ID_X86			== COTHREAD_ARCH_ID ? "x86"
