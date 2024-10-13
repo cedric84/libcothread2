@@ -18,7 +18,8 @@ check_config(void)
 	static const char*	cc_name		= COTHREAD_CC_ID_GCC			== COTHREAD_CC_ID ? "gcc"
 									: "???";
 
-	static const char*	arch_name	= COTHREAD_ARCH_ID_X86_64		== COTHREAD_ARCH_ID ? "x86_64"
+	static const char*	arch_name	= COTHREAD_ARCH_ID_X86			== COTHREAD_ARCH_ID ? "x86"
+									: COTHREAD_ARCH_ID_X86_64		== COTHREAD_ARCH_ID ? "x86_64"
 									: "???";
 
 	static const char*	os_name		= COTHREAD_OS_ID_GNU_LINUX		== COTHREAD_OS_ID ? "gnu_linux"
@@ -62,7 +63,10 @@ static void COTHREAD_CALL
 check_attr_init(void)
 {
 	//---Check structure member offsets used in assembly code---//
-	if (COTHREAD_ARCH_ID_X86_64 == COTHREAD_ARCH_ID) {
+	if (COTHREAD_ARCH_ID_X86 == COTHREAD_ARCH_ID) {
+		assert(0	== (uintptr_t)&(((cothreadj_attr_t*)0)->stack));
+		assert(4	== (uintptr_t)&(((cothreadj_attr_t*)0)->stack_sz));
+	} else if (COTHREAD_ARCH_ID_X86_64 == COTHREAD_ARCH_ID) {
 		assert(0	== (uintptr_t)&(((cothreadj_attr_t*)0)->stack));
 		assert(8	== (uintptr_t)&(((cothreadj_attr_t*)0)->stack_sz));
 	} else {
