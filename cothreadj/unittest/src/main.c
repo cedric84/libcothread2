@@ -16,6 +16,7 @@ check_config(void)
 {
 	//---Definitions---//
 	static const char*	cc_name		= COTHREAD_CC_ID_GCC			== COTHREAD_CC_ID ? "gcc"
+									: COTHREAD_CC_ID_CLANG			== COTHREAD_CC_ID ? "clang"
 									: "???";
 
 	static const char*	arch_name	= COTHREAD_ARCH_ID_X86			== COTHREAD_ARCH_ID ? "x86"
@@ -23,6 +24,7 @@ check_config(void)
 									: "???";
 
 	static const char*	os_name		= COTHREAD_OS_ID_GNU_LINUX		== COTHREAD_OS_ID ? "gnu_linux"
+									: COTHREAD_OS_ID_FREEBSD		== COTHREAD_OS_ID ? "freebsd"
 									: "???";
 
 	//---Check the configuration---//
