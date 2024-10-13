@@ -59,8 +59,9 @@
 
 	#if		(COTHREAD_CC_ID_MINGW == COTHREAD_CC_ID)
 		#define COTHREADJ_SETJMP(_buf)	_setjmp((_buf), 0)
-	#else
-		#define COTHREADJ_SETJMP(_buf)	setjmp((_buf))
+	#elif	(COTHREAD_CC_ID_CL == COTHREAD_CC_ID)
+		extern int	__intrinsic_setjmp	(jmp_buf, void*);
+		#define COTHREADJ_SETJMP(_buf)	__intrinsic_setjmp((_buf), 0)
 	#endif
 #else
 	/**

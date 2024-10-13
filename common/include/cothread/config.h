@@ -48,6 +48,8 @@
 	#define	COTHREAD_ARCH_ID	COTHREAD_ARCH_ID_X86_64
 #elif	((COTHREAD_CC_ID_CL == COTHREAD_CC_ID) && defined(_M_IX86))
 	#define	COTHREAD_ARCH_ID	COTHREAD_ARCH_ID_X86
+#elif	((COTHREAD_CC_ID_CL == COTHREAD_CC_ID) && defined(_M_AMD64))
+	#define	COTHREAD_ARCH_ID	COTHREAD_ARCH_ID_X86_64
 #endif
 
 #if		((COTHREAD_CC_ID_GCC == COTHREAD_CC_ID) && defined(__gnu_linux__))
@@ -135,6 +137,14 @@
 	#define COTHREAD_LINK_EXPORT	__declspec(dllexport)
 	#define	COTHREAD_LINK_HIDDEN
 	#define COTHREAD_CALL			__cdecl
+#elif	(!0	\
+		&& (COTHREAD_CC_ID_CL			== COTHREAD_CC_ID)		\
+		&& (COTHREAD_ARCH_ID_X86_64		== COTHREAD_ARCH_ID)	\
+		&& (COTHREAD_OS_ID_WINDOWS		== COTHREAD_OS_ID)		\
+		)
+	#define COTHREAD_LINK_EXPORT	__declspec(dllexport)
+	#define	COTHREAD_LINK_HIDDEN
+	#define COTHREAD_CALL
 #else
 	#error	"configuration is not supported."
 #endif
