@@ -1,0 +1,9 @@
+EXPORTS
+	cothreadj_attr_init
+	cothreadj_attr_set_dbg_caller_name
+	cothreadj_attr_set_dbg_callee_name
+	cothreadj_attr_set_dbg_strm
+	cothreadj_init
+	cothreadj_set_user_data
+	cothreadj_get_user_data
+	cothreadj_yield
