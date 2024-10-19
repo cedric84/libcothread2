@@ -9,10 +9,11 @@
 
 /**
  * @brief		Checks the configuration.
+ * @param		[in]	prefix	The prefix to check, may be NULL.
  * @ingroup		doxy_cothreadj_unittest
  */
 static void COTHREAD_CALL
-check_config(void)
+check_config(const char* prefix)
 {
 	//---Definitions---//
 	static const char*	cc_name		= COTHREAD_CC_ID_GCC			== COTHREAD_CC_ID ? "gcc"
@@ -35,6 +36,45 @@ check_config(void)
 	assert('?'	!= cc_name[0]);
 	assert('?'	!= arch_name[0]);
 	assert('?'	!= os_name[0]);
+
+	//---Check the prefix if any---//
+	if (NULL == prefix) {
+		// do nothing.
+	} else if (0 == strcmp(prefix, "x86-gnu_linux")) {
+		assert(COTHREAD_CC_ID_GCC		== COTHREAD_CC_ID);
+		assert(COTHREAD_ARCH_ID_X86		== COTHREAD_ARCH_ID);
+		assert(COTHREAD_OS_ID_GNU_LINUX	== COTHREAD_OS_ID);
+	} else if (0 == strcmp(prefix, "x86_64-gnu_linux")) {
+		assert(COTHREAD_CC_ID_GCC		== COTHREAD_CC_ID);
+		assert(COTHREAD_ARCH_ID_X86_64	== COTHREAD_ARCH_ID);
+		assert(COTHREAD_OS_ID_GNU_LINUX	== COTHREAD_OS_ID);
+	} else if (0 == strcmp(prefix, "x86_64-freebsd")) {
+		assert(COTHREAD_CC_ID_CLANG		== COTHREAD_CC_ID);
+		assert(COTHREAD_ARCH_ID_X86_64	== COTHREAD_ARCH_ID);
+		assert(COTHREAD_OS_ID_FREEBSD	== COTHREAD_OS_ID);
+	} else if (0 == strcmp(prefix, "x86_64-macos")) {
+		assert(COTHREAD_CC_ID_CLANG		== COTHREAD_CC_ID);
+		assert(COTHREAD_ARCH_ID_X86_64	== COTHREAD_ARCH_ID);
+		assert(COTHREAD_OS_ID_MACOS		== COTHREAD_OS_ID);
+	} else if (0 == strcmp(prefix, "x86-mingw")) {
+		assert(COTHREAD_CC_ID_MINGW		== COTHREAD_CC_ID);
+		assert(COTHREAD_ARCH_ID_X86		== COTHREAD_ARCH_ID);
+		assert(COTHREAD_OS_ID_WINDOWS	== COTHREAD_OS_ID);
+	} else if (0 == strcmp(prefix, "x86_64-mingw")) {
+		assert(COTHREAD_CC_ID_MINGW		== COTHREAD_CC_ID);
+		assert(COTHREAD_ARCH_ID_X86_64	== COTHREAD_ARCH_ID);
+		assert(COTHREAD_OS_ID_WINDOWS	== COTHREAD_OS_ID);
+	} else if (0 == strcmp(prefix, "x86-windows")) {
+		assert(COTHREAD_CC_ID_CL		== COTHREAD_CC_ID);
+		assert(COTHREAD_ARCH_ID_X86		== COTHREAD_ARCH_ID);
+		assert(COTHREAD_OS_ID_WINDOWS	== COTHREAD_OS_ID);
+	} else if (0 == strcmp(prefix, "x86_64-windows")) {
+		assert(COTHREAD_CC_ID_CL		== COTHREAD_CC_ID);
+		assert(COTHREAD_ARCH_ID_X86_64	== COTHREAD_ARCH_ID);
+		assert(COTHREAD_OS_ID_WINDOWS	== COTHREAD_OS_ID);
+	} else {
+		assert(0);
+	}
 
 	//---Log the configuration---//
 	static const int	align	= 16;
@@ -153,7 +193,11 @@ extern int
 main(int argc, char* argv[])
 {
 	printf("%s started\n", __func__);
-	check_config();
+
+	assert((1	<= argc) && (argc <= 2));
+	const char*	prefix	= (2 <= argc) ? argv[1] : NULL;
+
+	check_config(prefix);
 	check_macros();
 	check_attr_init();
 	check_cothread_init();

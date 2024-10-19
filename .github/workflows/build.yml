@@ -45,7 +45,7 @@ jobs:
           ./cothreadj/unittest/src/unittest1.c
           -lcothreadj
           &&
-          ./unittest
+          ./unittest ${{ github.job }}
 
   x86_64-gnu_linux:
     runs-on: ubuntu-latest
@@ -82,7 +82,7 @@ jobs:
           ./cothreadj/unittest/src/unittest1.c
           -lcothreadj
           &&
-          ./unittest
+          ./unittest ${{ github.job }}
 
   x86_64-macos:
     runs-on: macos-13
@@ -119,7 +119,7 @@ jobs:
           ./cothreadj/unittest/src/unittest1.c
           -lcothreadj
           &&
-          ./unittest
+          ./unittest ${{ github.job }}
 
   x86-mingw:
     runs-on: windows-latest
@@ -166,7 +166,7 @@ jobs:
           -lcothreadj
           )
           &&
-          cmd /C $env:CMAKE_INSTALL_PREFIX\bin\unittest
+          cmd /C $env:CMAKE_INSTALL_PREFIX\bin\unittest ${{ github.job }}
 
   x86_64-mingw:
     runs-on: windows-latest
@@ -211,7 +211,7 @@ jobs:
           -lcothreadj
           )
           &&
-          cmd /C $env:CMAKE_INSTALL_PREFIX\bin\unittest
+          cmd /C $env:CMAKE_INSTALL_PREFIX\bin\unittest ${{ github.job }}
 
   x86-windows:
     runs-on: windows-latest
@@ -262,7 +262,7 @@ jobs:
           /OUT:$env:CMAKE_INSTALL_PREFIX/bin/unittest.exe cothreadj.lib
           )"
           | cmd /K ("$env:VCVARS")
-          && cmd /C ("$env:CMAKE_INSTALL_PREFIX\bin\unittest.exe")
+          && cmd /C ("$env:CMAKE_INSTALL_PREFIX\bin\unittest.exe ${{ github.job }}")
 
   x86_64-windows:
     runs-on: windows-latest
@@ -313,4 +313,4 @@ jobs:
           /OUT:$env:CMAKE_INSTALL_PREFIX/bin/unittest.exe cothreadj.lib
           )"
           | cmd /K ("$env:VCVARS")
-          && cmd /C ("$env:CMAKE_INSTALL_PREFIX\bin\unittest.exe")
+          && cmd /C ("$env:CMAKE_INSTALL_PREFIX\bin\unittest.exe ${{ github.job }}")
