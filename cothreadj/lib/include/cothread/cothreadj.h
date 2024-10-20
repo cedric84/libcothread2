@@ -4,7 +4,8 @@
  *
  * @defgroup	doxy_cothreadj		cothread - setjmp / longjmp
  * @{
- *		@defgroup	doxy_cothreadj_unittest		unittest
+ *		@defgroup	doxy_cothreadj_unittest			C unittest
+ *		@defgroup	doxy_cothreadj_unittest_cxx		C++ unittest
  * @}
  */
 
