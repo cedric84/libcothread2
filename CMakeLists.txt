@@ -18,6 +18,11 @@
 #   - "/usr/local" on UNIX.
 #   - c:/Program Files/${PROJECT_NAME} on Windows.
 #
+# COTHREAD_BUILD_DOC
+# - TRUE:	Documentation is built if doxygen is found.
+# - FALSE:	Documentation is not built.
+# - This script makes it TRUE if not provided by user.
+#
 
 #---Check the cmake version---#
 cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
@@ -32,6 +37,7 @@ project(cothread
 
 #---Provide user options---#
 option(BUILD_SHARED_LIBS			"build shared libraries"			TRUE)
+option(COTHREAD_BUILD_DOC			"build documentation"				TRUE)
 
 #---Set the default build type if none already specified---#
 # Note: only meaningful to single-configuration generators (such as Makefile Generators and Ninja).
@@ -49,6 +55,7 @@ set(COTHREAD_INSTALL_DESTINATION_ARCHIVE			lib)
 set(COTHREAD_INSTALL_DESTINATION_LIBRARY			lib)
 set(COTHREAD_INSTALL_DESTINATION_RUNTIME			bin)
 set(COTHREAD_INSTALL_DESTINATION_PUBLIC_HEADER		include/${PROJECT_NAME}-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}/${PROJECT_NAME})
+set(COTHREAD_INSTALL_DESTINATION_DOCUMENTATION		doc/${PROJECT_NAME})
 
 #---Set the default RPATH configuration---#
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH	TRUE)
@@ -90,3 +97,49 @@ include(CTest)
 #---Add the subdirectories---#
 add_subdirectory(common)
 add_subdirectory(cothreadj)
+
+#---Is Doxygen found ?---#
+find_package(Doxygen COMPONENTS dot mscgen)
+if(COTHREAD_BUILD_DOC AND DOXYGEN_FOUND)
+	#---Add the documentation target---#
+	set(DOXYGEN_DOT_IMAGE_FORMAT				svg)
+	set(DOXYGEN_ENUM_VALUES_PER_LINE			1)
+	set(DOXYGEN_EXAMPLE_PATH					"cothreadj/examples")
+	set(DOXYGEN_EXCLUDE
+												"${CMAKE_INSTALL_PREFIX}/.."
+												"out"
+												"cothreadj/examples"
+												"cothreadj/README.md"
+	)
+	set(DOXYGEN_GENERATE_TREEVIEW				YES)
+	set(DOXYGEN_IGNORE_PREFIX					"_cothread_" "_COTHREAD_" "cothread_" "COTHREAD_"
+												"_cothreadj_" "_COTHREADJ_" "cothreadj_" "COTHREADJ_"
+	)
+	set(DOXYGEN_OPTIMIZE_OUTPUT_FOR_C			YES)
+	set(DOXYGEN_EXTRACT_PRIVATE					YES)
+	set(DOXYGEN_EXTRACT_STATIC					YES)
+
+	set(DOXYGEN_OUTPUT_DIRECTORY				"${PROJECT_BINARY_DIR}/docs")
+	set(DOXYGEN_PREDEFINED						"COTHREAD_LINK")
+	set(DOXYGEN_PROJECT_NAME					"${PROJECT_NAME}")
+	set(DOXYGEN_QUIET							YES)
+	set(DOXYGEN_STRIP_FROM_PATH					"${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
+	set(DOXYGEN_WARN_AS_ERROR					YES)
+	set(DOXYGEN_WARN_NO_PARAMDOC				YES)
+	set(DOXYGEN_RECURSIVE						YES)
+	set(DOXYGEN_GENERATE_LATEX					NO)
+	set(DOXYGEN_GENERATE_TAGFILE				"${DOXYGEN_OUTPUT_DIRECTORY}/doxygen-tagfile.xml")	# not alphabetically sorted since it depends on another variable.
+	doxygen_add_docs(doxygen
+		ALL
+		COMMENT	"Generating documentation"
+	)
+
+	#---Specify the install rules---#
+	install(
+		DIRECTORY
+			${DOXYGEN_OUTPUT_DIRECTORY}/
+		DESTINATION
+			${COTHREAD_INSTALL_DESTINATION_DOCUMENTATION}
+		MESSAGE_NEVER
+	)
+endif()
