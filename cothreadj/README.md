@@ -30,6 +30,7 @@ See this [example](examples/cothreadj_example0.c) for more details.
 ![cothreadj-cxx-x86-gnu_linux](https://github.com/cedric84/libcothread2/actions/workflows/cothreadj-cxx-x86-gnu_linux.yml/badge.svg?branch=ci)
 ![cothreadj-cxx-x86_64-gnu_linux](https://github.com/cedric84/libcothread2/actions/workflows/cothreadj-cxx-x86_64-gnu_linux.yml/badge.svg?branch=ci)
 ![cothreadj-cxx-x86_64-macos](https://github.com/cedric84/libcothread2/actions/workflows/cothreadj-cxx-x86_64-macos.yml/badge.svg?branch=ci)
+![cothreadj-cxx-aarch64-macos](https://github.com/cedric84/libcothread2/actions/workflows/cothreadj-cxx-aarch64-macos.yml/badge.svg?branch=ci)
 ![cothreadj-cxx-x86-mingw](https://github.com/cedric84/libcothread2/actions/workflows/cothreadj-cxx-x86-mingw.yml/badge.svg?branch=ci)
 
 ### Unsupported

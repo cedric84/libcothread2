@@ -24,6 +24,7 @@ check_config(const char* prefix)
 
 	static const char*	arch_name	= COTHREAD_ARCH_ID_X86			== COTHREAD_ARCH_ID ? "x86"
 									: COTHREAD_ARCH_ID_X86_64		== COTHREAD_ARCH_ID ? "x86_64"
+									: COTHREAD_ARCH_ID_AARCH64		== COTHREAD_ARCH_ID ? "aarch64"
 									: "???";
 
 	static const char*	os_name		= COTHREAD_OS_ID_GNU_LINUX		== COTHREAD_OS_ID ? "gnu_linux"
@@ -55,6 +56,10 @@ check_config(const char* prefix)
 	} else if (0 == strcmp(prefix, "x86_64-macos")) {
 		assert(COTHREAD_CC_ID_CLANG		== COTHREAD_CC_ID);
 		assert(COTHREAD_ARCH_ID_X86_64	== COTHREAD_ARCH_ID);
+		assert(COTHREAD_OS_ID_MACOS		== COTHREAD_OS_ID);
+	} else if (0 == strcmp(prefix, "aarch64-macos")) {
+		assert(COTHREAD_CC_ID_CLANG		== COTHREAD_CC_ID);
+		assert(COTHREAD_ARCH_ID_AARCH64	== COTHREAD_ARCH_ID);
 		assert(COTHREAD_OS_ID_MACOS		== COTHREAD_OS_ID);
 	} else if (0 == strcmp(prefix, "x86-mingw")) {
 		assert(COTHREAD_CC_ID_MINGW		== COTHREAD_CC_ID);
@@ -113,6 +118,9 @@ check_attr_init(void)
 		assert(0	== (uintptr_t)&(((cothreadj_attr_t*)0)->stack));
 		assert(4	== (uintptr_t)&(((cothreadj_attr_t*)0)->stack_sz));
 	} else if (COTHREAD_ARCH_ID_X86_64 == COTHREAD_ARCH_ID) {
+		assert(0	== (uintptr_t)&(((cothreadj_attr_t*)0)->stack));
+		assert(8	== (uintptr_t)&(((cothreadj_attr_t*)0)->stack_sz));
+	} else if (COTHREAD_ARCH_ID_AARCH64 == COTHREAD_ARCH_ID) {
 		assert(0	== (uintptr_t)&(((cothreadj_attr_t*)0)->stack));
 		assert(8	== (uintptr_t)&(((cothreadj_attr_t*)0)->stack_sz));
 	} else {

@@ -121,6 +121,43 @@ jobs:
           &&
           ./unittest ${{ github.job }}
 
+  aarch64-macos:
+    runs-on: macos-latest
+    env:
+      CMAKE_SOURCE_DIR: .
+      CMAKE_BINARY_DIR: ./out/build/${{ github.job }}
+      CMAKE_INSTALL_PREFIX: ./out/install/${{ github.job }}
+
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v4
+
+      - name: Configure the project & generate a native build system
+        run: >
+          cmake
+          -G "Unix Makefiles"
+          -D CMAKE_INSTALL_PREFIX=$CMAKE_INSTALL_PREFIX
+          -S $CMAKE_SOURCE_DIR
+          -B $CMAKE_BINARY_DIR
+
+      - name: Build the "install" target using the native build system
+        run:
+          cmake --build $CMAKE_BINARY_DIR --target install
+
+      - name: Unittest - cothreadj
+        run: >
+          cc -Wall -Werror -o unittest
+          -I ./cothreadj/unittest/include
+          -I $CMAKE_INSTALL_PREFIX/include/cothread-1.0
+          -L $CMAKE_INSTALL_PREFIX/lib
+          -Wl,-rpath,$CMAKE_INSTALL_PREFIX/lib
+          ./cothreadj/unittest/src/main.c
+          ./cothreadj/unittest/src/unittest0.c
+          ./cothreadj/unittest/src/unittest1.c
+          -lcothreadj
+          &&
+          ./unittest ${{ github.job }}
+
   x86-mingw:
     runs-on: windows-latest
     env:
