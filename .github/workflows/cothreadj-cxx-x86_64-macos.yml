@@ -2,7 +2,7 @@ name: cothreadj-cxx-x86_64-macos
 on:
   push:
     branches:
-      - github
+      - ci
 
 jobs:
   x86_64-macos:

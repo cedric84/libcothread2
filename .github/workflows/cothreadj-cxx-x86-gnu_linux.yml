@@ -2,7 +2,7 @@ name: cothreadj-cxx-x86-gnu_linux
 on:
   push:
     branches:
-      - github
+      - ci
 
 jobs:
   x86-gnu_linux:
