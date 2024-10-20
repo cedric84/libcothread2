@@ -1,0 +1,46 @@
+name: build
+on:
+  push:
+    branches:
+      - github
+
+jobs:
+  x86_64-macos:
+    runs-on: macos-13
+    env:
+      CMAKE_SOURCE_DIR: .
+      CMAKE_BINARY_DIR: ./out/build/${{ github.job }}
+      CMAKE_INSTALL_PREFIX: ./out/install/${{ github.job }}
+
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v4
+
+      - name: Configure the project & generate a native build system
+        run: >
+          cmake
+          -G "Unix Makefiles"
+          -D CMAKE_INSTALL_PREFIX=$CMAKE_INSTALL_PREFIX
+          -S $CMAKE_SOURCE_DIR
+          -B $CMAKE_BINARY_DIR
+
+      - name: Build the "install" target using the native build system
+        run:
+          cmake --build $CMAKE_BINARY_DIR --target install
+
+      - name: Unittest
+        run: >
+          clang++ -Wall -Werror -o unittest
+          -std=c++11
+          -I ./cothreadj/unittest-cxx/include
+          -I $CMAKE_INSTALL_PREFIX/include/cothread-1.0
+          -L $CMAKE_INSTALL_PREFIX/lib
+          -Wl,-rpath,$CMAKE_INSTALL_PREFIX/lib
+          ./cothreadj/unittest-cxx/src/main.cxx
+          ./cothreadj/unittest-cxx/src/cothdj.cxx
+          ./cothreadj/unittest-cxx/src/unittest0.cxx
+          ./cothreadj/unittest-cxx/src/unittest1.cxx
+          ./cothreadj/unittest-cxx/src/unittest2.cxx
+          -lcothreadj
+          &&
+          ./unittest
