@@ -1,0 +1,60 @@
+name: cothreadj-cxx-x86-windows
+on:
+  push:
+    branches:
+      - github
+
+jobs:
+  x86-windows:
+    runs-on: windows-latest
+    env:
+      CMAKE_SOURCE_DIR: .
+      CMAKE_BINARY_DIR: out\build\${{ github.job }}
+      CMAKE_INSTALL_PREFIX: out\install\${{ github.job }}
+
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v4
+
+      - name: Compute the path to the "vcvars" script
+        run: |
+          $VCINSTALLDIR=vcpkg env --triplet=x86-windows "cmd /C echo %VCINSTALLDIR%"
+          echo "VCVARS=${VCINSTALLDIR}Auxiliary\Build\vcvars32.bat" >> "$env:GITHUB_ENV"
+
+      - name: Configure the project & generate a native build system
+        run: >
+          echo "cmd /C (
+          cmake
+          -G ""NMake Makefiles""
+          -D CMAKE_INSTALL_PREFIX=$env:CMAKE_INSTALL_PREFIX
+          -S $env:CMAKE_SOURCE_DIR
+          -B $env:CMAKE_BINARY_DIR
+          )"
+          | cmd /K ("$env:VCVARS")
+
+      - name: Build the "install" target using the native build system
+        run: >
+          echo "cmd /C (
+          cmake --build $env:CMAKE_BINARY_DIR --target install
+          )"
+          | cmd /K ("$env:VCVARS")
+
+      - name: Unittest
+        run: >
+          echo "cmd /C (
+          cl /MD /nologo /permissive- /W3 /WX
+          /EHsc
+          /I ./cothreadj/unittest-cxx/include
+          /I $env:CMAKE_INSTALL_PREFIX/include/cothread-1.0
+          ./cothreadj/unittest-cxx/src/main.cxx
+          ./cothreadj/unittest-cxx/src/cothdj.cxx
+          ./cothreadj/unittest-cxx/src/unittest0.cxx
+          ./cothreadj/unittest-cxx/src/unittest1.cxx
+          ./cothreadj/unittest-cxx/src/unittest2.cxx
+          /link
+          /MACHINE:X86 /NOLOGO /SUBSYSTEM:CONSOLE
+          /LIBPATH:$env:CMAKE_INSTALL_PREFIX/lib
+          /OUT:$env:CMAKE_INSTALL_PREFIX/bin/unittest-cxx.exe cothreadj.lib
+          )"
+          | cmd /K ("$env:VCVARS")
+          && cmd /C ("$env:CMAKE_INSTALL_PREFIX\bin\unittest-cxx.exe")
