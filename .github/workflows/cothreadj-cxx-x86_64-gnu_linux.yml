@@ -1,4 +1,4 @@
-name: build
+name: cothreadj-cxx-x86_64-gnu_linux
 on:
   push:
     branches:
