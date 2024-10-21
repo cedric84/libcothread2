@@ -23,11 +23,16 @@
 .global	_cothreadj_init
 .p2align 4
 _cothreadj_init:
+	//---Insert a frame record in the linked list of stack frames---//
+	// see https://github.com/ARM-software/abi-aa/releases (aapcs64.pdf, §6.4.6 "The Frame Pointer")
+	sub	sp, sp, #16			// allocate memory from the stack (16-byte aligned.)
+	stp	fp, lr, [sp, #0]	// store fp & lr registers in the stack.
+	mov	fp, sp				// fp points the new frame record.
+
 	//---Save registers---//
-	sub	sp, sp, #32		// allocate memory from the stack (16-byte aligned.)
-	str	lr, [sp, #0]	// save link register.
-	str x19, [sp, #8]	// save x19 register.
-	str x20, [sp, #16]	// save x20 register.
+	sub	sp, sp, #16		// allocate memory from the stack (16-byte aligned.)
+	str x19, [sp, #0]	// save x19 register.
+	str x20, [sp, #8]	// save x20 register.
 
 	//---Save the caller stack---//
 	mov	x19, fp
@@ -41,6 +46,13 @@ _cothreadj_init:
 	// Setup the callee stack frame
 	mov	fp, x2								// load the frame pointer with the past-the-end stack address.
 	mov	sp, fp								// empty the stack.
+	// Insert an empty frame record in the linked list of stack frames
+	// see https://github.com/ARM-software/abi-aa/releases (aapcs64.pdf, §6.4.6 "The Frame Pointer")
+	// "The end of the frame record chain is indicated by the address zero in the address for the previous frame."
+	mov	x2, #0				// clear x2.
+	sub	sp, sp, #16			// allocate memory from the stack (16-byte aligned.)
+	stp	x2, x2, [sp, #0]	// store an empty frame record in the stack.
+	mov	fp, sp				// fp points the new frame record.
 
 	//---Initialize the cothread---//
 //	mov	x1, x1				// x1 is used as cothreadj_core arg1 (already set.)
@@ -52,10 +64,13 @@ _cothreadj_init:
 	mov	fp, x19
 
 	//---Restore registers---//
-	ldr x20, [sp, #16]	// restore x20 register.
-	ldr x19, [sp, #8]	// restore x19 register.
-	ldr	lr, [sp, #0]	// restore link register.
-	add	sp, sp, #32		// deallocate memory from the stack.
+	ldr x20, [sp, #8]	// restore x20 register.
+	ldr x19, [sp, #0]	// restore x19 register.
+	add	sp, sp, #16		// deallocate memory from the stack.
+
+	//---Remove the frame record from the linked list of stack frames---//
+	ldp	fp, lr, [sp, #0]	// restore fp & lr registers from the stack.
+	add	sp, sp, #16			// deallocate memory from the stack.
 
 	//---Return---//
 	ret
