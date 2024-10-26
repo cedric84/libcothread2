@@ -8,6 +8,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/// @ingroup doxy_cothreadt
+/// @{
+#define COTHREADT_FLAG_ABORTABLE	(1 << 0)	///< @brief	Says whether the cothread may be aborted or not.
+#define COTHREADT_FLAG_ABORTING		(1 << 1)	///< @brief	Says whether the cothread shall abort or not.
+/// @}
+
 /**
  * @brief		Unlocks the specified cothread.
  * @param		[in]	cothread	The cothread to unlock.
@@ -102,8 +108,11 @@ cothreadt_thd_cb(void* arg)
 	}
 	cothreadt_unlock(cothread);
 
-	//---Run the user callback---//
-	cothread->user_cb(cothread);
+	//---Run the user callback if no abortion is pending---//
+	if (0 == (COTHREADT_FLAG_ABORTING & cothread->flags)) {
+		cothread->flags	&= ~COTHREADT_FLAG_ABORTABLE;
+		cothread->user_cb(cothread);
+	}
 
 	//---Return to caller---//
 	cothreadt_lock(cothread);
@@ -116,6 +125,31 @@ cothreadt_thd_cb(void* arg)
 	return NULL;
 }
 
+/**
+ * @brief		Aborts the execution of the specified cothread.
+ * @param		[in]	cothread	The cothread to abort the execution of.
+ * @relates		_cothreadt_t
+ */
+static void COTHREAD_CALL
+cothreadt_abort(cothreadt_t* cothread)
+{
+	//---Check arguments---//
+	assert(NULL	!= cothread);
+	assert(0	== pthread_equal(pthread_self(), cothread->thread));
+
+	//---Abort---//
+	assert(COTHREADT_FLAG_ABORTABLE	== (COTHREADT_FLAG_ABORTABLE & cothread->flags));
+	assert(0						== (COTHREADT_FLAG_ABORTING & cothread->flags));
+	cothread->flags	|= COTHREADT_FLAG_ABORTING;
+
+	//---Wake the thread up---//
+	cothreadt_lock(cothread);
+	assert(cothreadt_state_paused	== cothread->state);
+	cothread->state	= cothreadt_state_resumed;
+	cothreadt_signal(cothread);
+	cothreadt_unlock(cothread);
+}
+
 extern COTHREAD_LINK void COTHREAD_CALL
 cothreadt_uninit(cothreadt_t* cothread)
 {
@@ -124,6 +158,11 @@ cothreadt_uninit(cothreadt_t* cothread)
 
 	//---Check arguments---//
 	assert(NULL	!= cothread);
+
+	//---May the cothread be aborted ?---//
+	if (COTHREADT_FLAG_ABORTABLE == (COTHREADT_FLAG_ABORTABLE & cothread->flags)) {
+		cothreadt_abort(cothread);
+	}
 
 	//---Join the thread---//
 	if (0 != (pthread_ret = pthread_join(cothread->thread, NULL))) {
@@ -154,6 +193,7 @@ cothreadt_init(cothreadt_t* cothread, const cothreadt_attr_t* attr)
 
 	//---Zero---//
 	cothread->state		= cothreadt_state_paused;
+	cothread->flags		= COTHREADT_FLAG_ABORTABLE;
 	cothread->user_cb	= attr->user_cb;
 
 	//---Initialize the mutex---//

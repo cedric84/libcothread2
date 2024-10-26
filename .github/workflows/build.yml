@@ -56,6 +56,7 @@ jobs:
           -Wl,-rpath=$CMAKE_INSTALL_PREFIX/lib
           ./cothreadt/unittest/src/main.c
           ./cothreadt/unittest/src/unittest0.c
+          ./cothreadt/unittest/src/unittest1.c
           -lcothreadt
           &&
           ./unittest-cothreadt ${{ github.job }}
@@ -106,6 +107,7 @@ jobs:
           -Wl,-rpath=$CMAKE_INSTALL_PREFIX/lib
           ./cothreadt/unittest/src/main.c
           ./cothreadt/unittest/src/unittest0.c
+          ./cothreadt/unittest/src/unittest1.c
           -lcothreadt
           &&
           ./unittest-cothreadt ${{ github.job }}
@@ -156,6 +158,7 @@ jobs:
           -Wl,-rpath,$CMAKE_INSTALL_PREFIX/lib
           ./cothreadt/unittest/src/main.c
           ./cothreadt/unittest/src/unittest0.c
+          ./cothreadt/unittest/src/unittest1.c
           -lcothreadt
           &&
           ./unittest-cothreadt ${{ github.job }}
@@ -206,6 +209,7 @@ jobs:
           -Wl,-rpath,$CMAKE_INSTALL_PREFIX/lib
           ./cothreadt/unittest/src/main.c
           ./cothreadt/unittest/src/unittest0.c
+          ./cothreadt/unittest/src/unittest1.c
           -lcothreadt
           &&
           ./unittest-cothreadt ${{ github.job }}
@@ -266,6 +270,7 @@ jobs:
           -L $env:CMAKE_INSTALL_PREFIX/lib
           ./cothreadt/unittest/src/main.c
           ./cothreadt/unittest/src/unittest0.c
+          ./cothreadt/unittest/src/unittest1.c
           -lcothreadt
           )
           &&
@@ -325,6 +330,7 @@ jobs:
           -L $env:CMAKE_INSTALL_PREFIX/lib
           ./cothreadt/unittest/src/main.c
           ./cothreadt/unittest/src/unittest0.c
+          ./cothreadt/unittest/src/unittest1.c
           -lcothreadt
           )
           &&
@@ -389,6 +395,7 @@ jobs:
           /I $env:CMAKE_INSTALL_PREFIX/include/cothread-1.0
           ./cothreadt/unittest/src/main.c
           ./cothreadt/unittest/src/unittest0.c
+          ./cothreadt/unittest/src/unittest1.c
           /link
           /MACHINE:X86 /NOLOGO /SUBSYSTEM:CONSOLE
           /LIBPATH:$env:CMAKE_INSTALL_PREFIX/lib
@@ -456,6 +463,7 @@ jobs:
           /I $env:CMAKE_INSTALL_PREFIX/include/cothread-1.0
           ./cothreadt/unittest/src/main.c
           ./cothreadt/unittest/src/unittest0.c
+          ./cothreadt/unittest/src/unittest1.c
           /link
           /MACHINE:X64 /NOLOGO /SUBSYSTEM:CONSOLE
           /LIBPATH:$env:CMAKE_INSTALL_PREFIX/lib

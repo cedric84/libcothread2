@@ -19,6 +19,7 @@ main(int argc, char* argv[])
 	printf("%s started\n", __func__);
 
 	unittest0();
+	unittest1();
 
 	printf("%s terminated\n", __func__);
 	return 0;

@@ -7,6 +7,12 @@
 #include <assert.h>
 #include <stdio.h>
 
+/// @ingroup doxy_cothreadt
+/// @{
+#define COTHREADT_FLAG_ABORTABLE	(1 << 0)	///< @brief	Says whether the cothread may be aborted or not.
+#define COTHREADT_FLAG_ABORTING		(1 << 1)	///< @brief	Says whether the cothread shall abort or not.
+/// @}
+
 /**
  * @brief		Waits for the specified event to be signaled.
  * @param		[in]	cothread	The cothread.
@@ -64,8 +70,11 @@ cothreadt_thd_cb(LPVOID lpParameter)
 	//---Wait for the thread to be resumed---//
 	cothreadt_wait(cothread, cothread->callee);
 
-	//---Run the user callback---//
-	cothread->user_cb(cothread);
+	//---Run the user callback if no abortion is pending---//
+	if (0 == (COTHREADT_FLAG_ABORTING & cothread->flags)) {
+		cothread->flags	&= ~COTHREADT_FLAG_ABORTABLE;
+		cothread->user_cb(cothread);
+	}
 
 	//---Return to caller---//
 	cothreadt_signal(cothread, cothread->caller);
@@ -74,11 +83,37 @@ cothreadt_thd_cb(LPVOID lpParameter)
 	return 0;
 }
 
+/**
+ * @brief		Aborts the execution of the specified cothread.
+ * @param		[in]	cothread	The cothread to abort the execution of.
+ * @relates		_cothreadt_t
+ */
+static void COTHREAD_CALL
+cothreadt_abort(cothreadt_t* cothread)
+{
+	//---Check arguments---//
+	assert(NULL	!= cothread);
+	assert(GetCurrentThreadId()	!= cothread->thread_id);
+
+	//---Abort---//
+	assert(COTHREADT_FLAG_ABORTABLE	== (COTHREADT_FLAG_ABORTABLE & cothread->flags));
+	assert(0						== (COTHREADT_FLAG_ABORTING & cothread->flags));
+	cothread->flags	|= COTHREADT_FLAG_ABORTING;
+
+	//---Wake the thread up---//
+	cothreadt_signal(cothread, cothread->callee);
+}
+
 extern COTHREAD_LINK void COTHREAD_CALL
 cothreadt_uninit(cothreadt_t* cothread)
 {
 	//---Check arguments---//
 	assert(NULL	!= cothread);
+
+	//---May the cothread be aborted ?---//
+	if (COTHREADT_FLAG_ABORTABLE == (COTHREADT_FLAG_ABORTABLE & cothread->flags)) {
+		cothreadt_abort(cothread);
+	}
 
 	//---Wait for the thread to complete---//
 	const DWORD	wait_ret	= WaitForSingleObject(cothread->thread_hdl, INFINITE);
@@ -113,6 +148,7 @@ cothreadt_init(cothreadt_t* cothread, const cothreadt_attr_t* attr)
 	assert(NULL	!= attr);
 
 	//---Zero---//
+	cothread->flags		= COTHREADT_FLAG_ABORTABLE;
 	cothread->user_cb	= attr->user_cb;
 
 	//---Create the caller event---//

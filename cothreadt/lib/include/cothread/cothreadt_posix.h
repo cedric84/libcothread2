@@ -34,6 +34,7 @@ struct _cothreadt_t
 	pthread_mutex_t		mtx;		///< @brief	The mutex.
 	pthread_cond_t		cond;		///< @brief	The condition variable.
 	cothreadt_state_t	state;		///< @brief	The current state.
+	unsigned int		flags;		///< @brief	Several flags.
 
 	cothreadt_cb_t		user_cb;	///< @brief	The cothread entry point.
 	void*				user_data;	///< @brief	Any user data.
