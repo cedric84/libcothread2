@@ -16,10 +16,13 @@ target_include_directories(${COTHREAD_TARGET_NAME}
 		include
 )
 
-#---Specify the install rules---#
-install(FILES
-		include/cothread/config.h
-		include/cothread/types.h
-	DESTINATION
-		${COTHREAD_INSTALL_DESTINATION_PUBLIC_HEADER}
-)
+#---Add the library---#
+if(COTHREAD_BUILD_LIB)
+	#---Specify the install rules---#
+	install(FILES
+			include/cothread/config.h
+			include/cothread/types.h
+		DESTINATION
+			${COTHREAD_INSTALL_DESTINATION_PUBLIC_HEADER}
+	)
+endif()
