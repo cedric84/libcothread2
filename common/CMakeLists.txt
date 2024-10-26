@@ -19,6 +19,7 @@ target_include_directories(${COTHREAD_TARGET_NAME}
 #---Specify the install rules---#
 install(FILES
 		include/cothread/config.h
+		include/cothread/types.h
 	DESTINATION
 		${COTHREAD_INSTALL_DESTINATION_PUBLIC_HEADER}
 )

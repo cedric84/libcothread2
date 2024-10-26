@@ -97,6 +97,7 @@ include(CTest)
 #---Add the subdirectories---#
 add_subdirectory(common)
 add_subdirectory(cothreadj)
+add_subdirectory(cothreadt)
 
 #---Is Doxygen found ?---#
 find_package(Doxygen COMPONENTS dot mscgen)
@@ -104,12 +105,18 @@ if(COTHREAD_BUILD_DOC AND DOXYGEN_FOUND)
 	#---Add the documentation target---#
 	set(DOXYGEN_DOT_IMAGE_FORMAT				svg)
 	set(DOXYGEN_ENUM_VALUES_PER_LINE			1)
-	set(DOXYGEN_EXAMPLE_PATH					"cothreadj/examples")
+	set(DOXYGEN_EXAMPLE_PATH
+												"cothreadj/examples"
+												"cothreadt/examples"
+	)
 	set(DOXYGEN_EXCLUDE
 												"${CMAKE_INSTALL_PREFIX}/.."
 												"out"
 												"cothreadj/examples"
 												"cothreadj/README.md"
+												"cothreadt/lib/include/cothread/cothreadt_windows.h"
+												"cothreadt/lib/src/windows.c"
+												"cothreadt/examples"
 	)
 	set(DOXYGEN_GENERATE_TREEVIEW				YES)
 	set(DOXYGEN_IGNORE_PREFIX					"_cothread_" "_COTHREAD_" "cothread_" "COTHREAD_"

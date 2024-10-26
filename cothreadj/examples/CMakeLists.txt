@@ -1,5 +1,5 @@
 #---Set the name & version for the project---#
-project(${PROJECT_NAME}_example0
+project(${PROJECT_NAME}j_example0
 	VERSION
 		${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}.${PROJECT_VERSION_TWEAK}
 	LANGUAGES

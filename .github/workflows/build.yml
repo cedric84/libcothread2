@@ -35,7 +35,7 @@ jobs:
 
       - name: Unittest - cothreadj
         run: >
-          i686-linux-gnu-gcc -Wall -Werror -o unittest
+          i686-linux-gnu-gcc -Wall -Werror -o unittest-cothreadj
           -I ./cothreadj/unittest/include
           -I $CMAKE_INSTALL_PREFIX/include/cothread-1.0
           -L $CMAKE_INSTALL_PREFIX/lib
@@ -45,7 +45,20 @@ jobs:
           ./cothreadj/unittest/src/unittest1.c
           -lcothreadj
           &&
-          ./unittest ${{ github.job }}
+          ./unittest-cothreadj ${{ github.job }}
+
+      - name: Unittest - cothreadt
+        run: >
+          i686-linux-gnu-gcc -Wall -Werror -o unittest-cothreadt
+          -I ./cothreadt/unittest/include
+          -I $CMAKE_INSTALL_PREFIX/include/cothread-1.0
+          -L $CMAKE_INSTALL_PREFIX/lib
+          -Wl,-rpath=$CMAKE_INSTALL_PREFIX/lib
+          ./cothreadt/unittest/src/main.c
+          ./cothreadt/unittest/src/unittest0.c
+          -lcothreadt
+          &&
+          ./unittest-cothreadt ${{ github.job }}
 
   x86_64-gnu_linux:
     runs-on: ubuntu-latest
@@ -72,7 +85,7 @@ jobs:
 
       - name: Unittest - cothreadj
         run: >
-          cc -Wall -Werror -o unittest
+          cc -Wall -Werror -o unittest-cothreadj
           -I ./cothreadj/unittest/include
           -I $CMAKE_INSTALL_PREFIX/include/cothread-1.0
           -L $CMAKE_INSTALL_PREFIX/lib
@@ -82,7 +95,20 @@ jobs:
           ./cothreadj/unittest/src/unittest1.c
           -lcothreadj
           &&
-          ./unittest ${{ github.job }}
+          ./unittest-cothreadj ${{ github.job }}
+
+      - name: Unittest - cothreadt
+        run: >
+          cc -Wall -Werror -o unittest-cothreadt
+          -I ./cothreadt/unittest/include
+          -I $CMAKE_INSTALL_PREFIX/include/cothread-1.0
+          -L $CMAKE_INSTALL_PREFIX/lib
+          -Wl,-rpath=$CMAKE_INSTALL_PREFIX/lib
+          ./cothreadt/unittest/src/main.c
+          ./cothreadt/unittest/src/unittest0.c
+          -lcothreadt
+          &&
+          ./unittest-cothreadt ${{ github.job }}
 
   x86_64-macos:
     runs-on: macos-13
@@ -109,7 +135,7 @@ jobs:
 
       - name: Unittest - cothreadj
         run: >
-          cc -Wall -Werror -o unittest
+          cc -Wall -Werror -o unittest-cothreadj
           -I ./cothreadj/unittest/include
           -I $CMAKE_INSTALL_PREFIX/include/cothread-1.0
           -L $CMAKE_INSTALL_PREFIX/lib
@@ -119,7 +145,20 @@ jobs:
           ./cothreadj/unittest/src/unittest1.c
           -lcothreadj
           &&
-          ./unittest ${{ github.job }}
+          ./unittest-cothreadj ${{ github.job }}
+
+      - name: Unittest - cothreadt
+        run: >
+          cc -Wall -Werror -o unittest-cothreadt
+          -I ./cothreadt/unittest/include
+          -I $CMAKE_INSTALL_PREFIX/include/cothread-1.0
+          -L $CMAKE_INSTALL_PREFIX/lib
+          -Wl,-rpath,$CMAKE_INSTALL_PREFIX/lib
+          ./cothreadt/unittest/src/main.c
+          ./cothreadt/unittest/src/unittest0.c
+          -lcothreadt
+          &&
+          ./unittest-cothreadt ${{ github.job }}
 
   aarch64-macos:
     runs-on: macos-latest
@@ -146,7 +185,7 @@ jobs:
 
       - name: Unittest - cothreadj
         run: >
-          cc -Wall -Werror -o unittest
+          cc -Wall -Werror -o unittest-cothreadj
           -I ./cothreadj/unittest/include
           -I $CMAKE_INSTALL_PREFIX/include/cothread-1.0
           -L $CMAKE_INSTALL_PREFIX/lib
@@ -156,7 +195,20 @@ jobs:
           ./cothreadj/unittest/src/unittest1.c
           -lcothreadj
           &&
-          ./unittest ${{ github.job }}
+          ./unittest-cothreadj ${{ github.job }}
+
+      - name: Unittest - cothreadt
+        run: >
+          cc -Wall -Werror -o unittest-cothreadt
+          -I ./cothreadt/unittest/include
+          -I $CMAKE_INSTALL_PREFIX/include/cothread-1.0
+          -L $CMAKE_INSTALL_PREFIX/lib
+          -Wl,-rpath,$CMAKE_INSTALL_PREFIX/lib
+          ./cothreadt/unittest/src/main.c
+          ./cothreadt/unittest/src/unittest0.c
+          -lcothreadt
+          &&
+          ./unittest-cothreadt ${{ github.job }}
 
   x86-mingw:
     runs-on: windows-latest
@@ -193,7 +245,7 @@ jobs:
       - name: Unittest - cothreadj
         run: >
           cmd /C (
-          gcc -Wall -Werror -o $env:CMAKE_INSTALL_PREFIX/bin/unittest
+          gcc -Wall -Werror -o $env:CMAKE_INSTALL_PREFIX/bin/unittest-cothreadj
           -I ./cothreadj/unittest/include
           -I $env:CMAKE_INSTALL_PREFIX/include/cothread-1.0
           -L $env:CMAKE_INSTALL_PREFIX/lib
@@ -203,7 +255,21 @@ jobs:
           -lcothreadj
           )
           &&
-          cmd /C $env:CMAKE_INSTALL_PREFIX\bin\unittest ${{ github.job }}
+          cmd /C $env:CMAKE_INSTALL_PREFIX\bin\unittest-cothreadj ${{ github.job }}
+
+      - name: Unittest - cothreadt
+        run: >
+          cmd /C (
+          gcc -Wall -Werror -o $env:CMAKE_INSTALL_PREFIX/bin/unittest-cothreadt
+          -I ./cothreadt/unittest/include
+          -I $env:CMAKE_INSTALL_PREFIX/include/cothread-1.0
+          -L $env:CMAKE_INSTALL_PREFIX/lib
+          ./cothreadt/unittest/src/main.c
+          ./cothreadt/unittest/src/unittest0.c
+          -lcothreadt
+          )
+          &&
+          cmd /C $env:CMAKE_INSTALL_PREFIX\bin\unittest-cothreadt ${{ github.job }}
 
   x86_64-mingw:
     runs-on: windows-latest
@@ -238,7 +304,7 @@ jobs:
       - name: Unittest - cothreadj
         run: >
           cmd /C (
-          gcc -Wall -Werror -o $env:CMAKE_INSTALL_PREFIX/bin/unittest
+          gcc -Wall -Werror -o $env:CMAKE_INSTALL_PREFIX/bin/unittest-cothreadj
           -I ./cothreadj/unittest/include
           -I $env:CMAKE_INSTALL_PREFIX/include/cothread-1.0
           -L $env:CMAKE_INSTALL_PREFIX/lib
@@ -248,7 +314,21 @@ jobs:
           -lcothreadj
           )
           &&
-          cmd /C $env:CMAKE_INSTALL_PREFIX\bin\unittest ${{ github.job }}
+          cmd /C $env:CMAKE_INSTALL_PREFIX\bin\unittest-cothreadj ${{ github.job }}
+
+      - name: Unittest - cothreadt
+        run: >
+          cmd /C (
+          gcc -Wall -Werror -o $env:CMAKE_INSTALL_PREFIX/bin/unittest-cothreadt
+          -I ./cothreadt/unittest/include
+          -I $env:CMAKE_INSTALL_PREFIX/include/cothread-1.0
+          -L $env:CMAKE_INSTALL_PREFIX/lib
+          ./cothreadt/unittest/src/main.c
+          ./cothreadt/unittest/src/unittest0.c
+          -lcothreadt
+          )
+          &&
+          cmd /C $env:CMAKE_INSTALL_PREFIX\bin\unittest-cothreadt ${{ github.job }}
 
   x86-windows:
     runs-on: windows-latest
@@ -296,10 +376,26 @@ jobs:
           /link
           /MACHINE:X86 /NOLOGO /SUBSYSTEM:CONSOLE
           /LIBPATH:$env:CMAKE_INSTALL_PREFIX/lib
-          /OUT:$env:CMAKE_INSTALL_PREFIX/bin/unittest.exe cothreadj.lib
+          /OUT:$env:CMAKE_INSTALL_PREFIX/bin/unittest-cothreadj.exe cothreadj.lib
           )"
           | cmd /K ("$env:VCVARS")
-          && cmd /C ("$env:CMAKE_INSTALL_PREFIX\bin\unittest.exe ${{ github.job }}")
+          && cmd /C ("$env:CMAKE_INSTALL_PREFIX\bin\unittest-cothreadj.exe ${{ github.job }}")
+
+      - name: Unittest - cothreadt
+        run: >
+          echo "cmd /C (
+          cl /MD /nologo /permissive- /W3 /WX
+          /I ./cothreadt/unittest/include
+          /I $env:CMAKE_INSTALL_PREFIX/include/cothread-1.0
+          ./cothreadt/unittest/src/main.c
+          ./cothreadt/unittest/src/unittest0.c
+          /link
+          /MACHINE:X86 /NOLOGO /SUBSYSTEM:CONSOLE
+          /LIBPATH:$env:CMAKE_INSTALL_PREFIX/lib
+          /OUT:$env:CMAKE_INSTALL_PREFIX/bin/unittest-cothreadt.exe cothreadt.lib
+          )"
+          | cmd /K ("$env:VCVARS")
+          && cmd /C ("$env:CMAKE_INSTALL_PREFIX\bin\unittest-cothreadt.exe ${{ github.job }}")
 
   x86_64-windows:
     runs-on: windows-latest
@@ -347,7 +443,23 @@ jobs:
           /link
           /MACHINE:X64 /NOLOGO /SUBSYSTEM:CONSOLE
           /LIBPATH:$env:CMAKE_INSTALL_PREFIX/lib
-          /OUT:$env:CMAKE_INSTALL_PREFIX/bin/unittest.exe cothreadj.lib
+          /OUT:$env:CMAKE_INSTALL_PREFIX/bin/unittest-cothreadj.exe cothreadj.lib
           )"
           | cmd /K ("$env:VCVARS")
-          && cmd /C ("$env:CMAKE_INSTALL_PREFIX\bin\unittest.exe ${{ github.job }}")
+          && cmd /C ("$env:CMAKE_INSTALL_PREFIX\bin\unittest-cothreadj.exe ${{ github.job }}")
+
+      - name: Unittest - cothreadt
+        run: >
+          echo "cmd /C (
+          cl /MD /nologo /permissive- /W3 /WX
+          /I ./cothreadt/unittest/include
+          /I $env:CMAKE_INSTALL_PREFIX/include/cothread-1.0
+          ./cothreadt/unittest/src/main.c
+          ./cothreadt/unittest/src/unittest0.c
+          /link
+          /MACHINE:X64 /NOLOGO /SUBSYSTEM:CONSOLE
+          /LIBPATH:$env:CMAKE_INSTALL_PREFIX/lib
+          /OUT:$env:CMAKE_INSTALL_PREFIX/bin/unittest-cothreadt.exe cothreadt.lib
+          )"
+          | cmd /K ("$env:VCVARS")
+          && cmd /C ("$env:CMAKE_INSTALL_PREFIX\bin\unittest-cothreadt.exe ${{ github.job }}")

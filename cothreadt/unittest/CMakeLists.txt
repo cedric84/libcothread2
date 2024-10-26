@@ -1,5 +1,5 @@
 #---Set the name & version for the project---#
-project(${PROJECT_NAME}j_unittest
+project(${PROJECT_NAME}t_unittest
 	VERSION
 		${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}.${PROJECT_VERSION_TWEAK}
 	LANGUAGES
@@ -24,7 +24,7 @@ add_subdirectory(src)
 
 #---Add dependencies---#
 target_link_libraries(${COTHREAD_TARGET_NAME}
-	cothreadj
+	cothreadt
 )
 
 #---Add some tests---#

@@ -1,5 +1,5 @@
 #---Set the name & version for the project---#
-project(${PROJECT_NAME}j_unittest
+project(${PROJECT_NAME}t_example0
 	VERSION
 		${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}.${PROJECT_VERSION_TWEAK}
 	LANGUAGES
@@ -8,23 +8,14 @@ project(${PROJECT_NAME}j_unittest
 
 #---Add the executable----#
 set(COTHREAD_TARGET_NAME	${PROJECT_NAME})
-add_executable(${COTHREAD_TARGET_NAME})
+add_executable(${COTHREAD_TARGET_NAME} cothreadt_example0.c)
 set_target_properties(${COTHREAD_TARGET_NAME} PROPERTIES
 	VERSION		${PROJECT_VERSION}
 )
 
-#---Add include directories to the target---#
-target_include_directories(${COTHREAD_TARGET_NAME}
-	PRIVATE
-		include
-)
-
-#---Add subdirectories---#
-add_subdirectory(src)
-
 #---Add dependencies---#
 target_link_libraries(${COTHREAD_TARGET_NAME}
-	cothreadj
+	cothreadt
 )
 
 #---Add some tests---#
