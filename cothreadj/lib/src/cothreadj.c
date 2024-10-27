@@ -73,13 +73,44 @@
 	#define COTHREADJ_SETJMP(_buf)	setjmp((_buf))
 #endif
 
-/**
- * @brief		Calls the longjmp function.
- * @param		[in]	_buf		The execution context to restore.
- * @param		[in]	_user_val	The user value to return.
- * @ingroup		doxy_cothreadj
- */
-#define COTHREADJ_LONGJMP(_buf, _user_val)	longjmp((_buf), (_user_val))
+#if ((COTHREAD_CC_ID_CL == COTHREAD_CC_ID) && (COTHREAD_ARCH_ID_X86 == COTHREAD_ARCH_ID) && (COTHREAD_OS_ID_WINDOWS == COTHREAD_OS_ID))
+	// NOTE about x86-Windows:
+	// =======================
+	//
+	// - The current "Structured Exception Handling" (SEH) frame is stored in register FS:[0] ;
+	// - This current frame in stored in the jmp_buf during a setjmp ;
+	// - This current frame is compared with the jmp_buf one during a longjmp ;
+	// - If both frames mismatch, the longjmp unwinds the stack to handle the Microsoft __finally extension,
+	//   which results in a 0xC0000029 (STATUS_INVALID_UNWIND_TARGET) error.
+	//
+	// To prevent this, we overwrite the _JUMP_BUFFER.Registration value with the one the CRT is expecting.
+	//
+	// From https://devblogs.microsoft.com/oldnewthing/20190203-00/?p=101028 :
+	// On the 80386, Windows uses the fs segment register to access a small block of memory that is associated with each thread,
+	// known as the Thread Environment Block, or TEB.
+	// (...) The part of the TEB you’re going to see most often is the memory at offset 0,
+	// which is the head of a linked list of structured exception handling records threaded through the stack.
+	//
+	// More about this:
+	// - https://en.wikipedia.org/wiki/Win32_Thread_Information_Block#Contents_of_the_TIB_on_Windows
+	// - https://learn.microsoft.com/en-us/cpp/cpp/structured-exception-handling-c-cpp?view=msvc-170
+	//
+	// The intrinsic __readfsdword function used below (to access the FS:[0] value) is listed and detailed in:
+	// https://learn.microsoft.com/en-us/cpp/intrinsics/x86-intrinsics-list?view=msvc-170
+	#define COTHREADJ_LONGJMP(_buf, _user_val)	{				\
+		_JUMP_BUFFER*	_jmp_buf	= (_JUMP_BUFFER*)(_buf);	\
+		_jmp_buf->Registration = __readfsdword(0);				\
+		longjmp((_JBTYPE*)_jmp_buf, (_user_val));				\
+	}
+#else
+	/**
+	 * @brief		Calls the longjmp function.
+	 * @param		[in]	_buf		The execution context to restore.
+	 * @param		[in]	_user_val	The user value to return.
+	 * @ingroup		doxy_cothreadj
+	 */
+	#define COTHREADJ_LONGJMP(_buf, _user_val)	longjmp((_buf), (_user_val))
+#endif
 
 extern COTHREAD_LINK void COTHREAD_CALL
 cothreadj_attr_init(cothreadj_attr_t* attr, cothreadj_stack_t* stack, size_t stack_sz, cothreadj_cb_t user_cb)
